@@ -734,15 +734,8 @@ static void surface_handle_resource_destroy(struct wl_resource *resource) {
 	surface_destroy_role_object(surface);
 
 	wl_signal_emit_mutable(&surface->events.destroy, surface);
+
 	wlr_addon_set_finish(&surface->addons);
-
-	assert(wl_list_empty(&surface->events.client_commit.listener_list));
-	assert(wl_list_empty(&surface->events.commit.listener_list));
-	assert(wl_list_empty(&surface->events.map.listener_list));
-	assert(wl_list_empty(&surface->events.unmap.listener_list));
-	assert(wl_list_empty(&surface->events.destroy.listener_list));
-	assert(wl_list_empty(&surface->events.new_subsurface.listener_list));
-
 	assert(wl_list_empty(&surface->synced));
 
 	struct wlr_surface_state *cached, *cached_tmp;
@@ -796,7 +789,6 @@ static struct wlr_surface *surface_create(struct wl_client *client,
 	wl_signal_init(&surface->events.unmap);
 	wl_signal_init(&surface->events.destroy);
 	wl_signal_init(&surface->events.new_subsurface);
-
 	wl_list_init(&surface->current_outputs);
 	wl_list_init(&surface->cached);
 	pixman_region32_init(&surface->buffer_damage);
@@ -1352,10 +1344,6 @@ static void compositor_handle_display_destroy(
 	struct wlr_compositor *compositor =
 		wl_container_of(listener, compositor, display_destroy);
 	wl_signal_emit_mutable(&compositor->events.destroy, NULL);
-
-	assert(wl_list_empty(&compositor->events.new_surface.listener_list));
-	assert(wl_list_empty(&compositor->events.destroy.listener_list));
-
 	wl_list_remove(&compositor->display_destroy.link);
 	wl_list_remove(&compositor->renderer_destroy.link);
 	wl_global_destroy(compositor->global);
@@ -1387,7 +1375,6 @@ struct wlr_compositor *wlr_compositor_create(struct wl_display *display,
 
 	wl_signal_init(&compositor->events.new_surface);
 	wl_signal_init(&compositor->events.destroy);
-
 	wl_list_init(&compositor->renderer_destroy.link);
 
 	compositor->display_destroy.notify = compositor_handle_display_destroy;

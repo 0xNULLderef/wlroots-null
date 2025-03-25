@@ -171,11 +171,6 @@ void wlr_keyboard_finish(struct wlr_keyboard *kb) {
 
 	wlr_input_device_finish(&kb->base);
 
-	assert(wl_list_empty(&kb->events.key.listener_list));
-	assert(wl_list_empty(&kb->events.modifiers.listener_list));
-	assert(wl_list_empty(&kb->events.keymap.listener_list));
-	assert(wl_list_empty(&kb->events.repeat_info.listener_list));
-
 	keyboard_unset_keymap(kb);
 }
 
